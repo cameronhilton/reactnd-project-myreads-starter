@@ -7,13 +7,6 @@ import './App.css'
  
 class BooksApp extends Component {
   state = {
-    /**
-     * TODO: Instead of using this state variable to keep track of which page
-     * we're on, use the URL in the browser's address bar. This will ensure that
-     * users can use the browser's back and forward buttons to navigate between
-     * pages, as well as provide a good URL they can bookmark and share.
-     */
-    showSearchPage: false,
     currentlyReading: [],
     wantToRead: [],
     read: []
@@ -47,11 +40,11 @@ class BooksApp extends Component {
   render() {
     return (
       <div className="app">
-        <Route path='/search' render={() => (
-            <SearchBooks/>
+        <Route path='/search' render={({ history }) => (
+            <SearchBooks onClose={() => history.push('/')}/>
           )}
         />
-        <Route exact path='/' render={() => (
+        <Route exact path='/' render={({ history }) => (
             <div className="list-books">
               <div className="list-books-title">
                 <h1>MyReads</h1>
@@ -62,12 +55,11 @@ class BooksApp extends Component {
                 <BookShelf title='Read' books={this.state.read}/>
               </div>
               <div className="open-search">
-                <button onClick={() => this.setState({ showSearchPage: true })}>Add a book</button>
+                <button onClick={() => history.push('/search')}>Add a book</button>
               </div>
             </div>
           )}
         />
-        )}
       </div>
     )
   }
