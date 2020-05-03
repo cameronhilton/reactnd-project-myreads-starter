@@ -12,7 +12,7 @@ class BooksApp extends Component {
     read: []
   }
 
-  componentDidMount() {
+  getBooks = () => {
     BooksAPI.getAll()
     .then((books) => {
       let currentlyReading = []
@@ -37,6 +37,17 @@ class BooksApp extends Component {
     })
   }
 
+  componentDidMount() {
+    this.getBooks()
+  }
+
+  updateShelf = ((book, event) => {
+    const futureShelf = event.target.value
+    BooksAPI.update(book, futureShelf).then(() => 
+      this.getBooks()
+    )
+  })
+
   render() {
     return (
       <div className="app">
@@ -50,9 +61,9 @@ class BooksApp extends Component {
                 <h1>MyReads</h1>
               </div>
               <div className="list-books-content">
-                <BookShelf title='Currently Reading' books={this.state.currentlyReading}/>
-                <BookShelf title='Want to Read' books={this.state.wantToRead}/>
-                <BookShelf title='Read' books={this.state.read}/>
+                <BookShelf title='Currently Reading' books={this.state.currentlyReading} updateShelf={this.updateShelf}/>
+                <BookShelf title='Want to Read' books={this.state.wantToRead} updateShelf={this.updateShelf}/>
+                <BookShelf title='Read' books={this.state.read} updateShelf={this.updateShelf}/>
               </div>
               <div className="open-search">
                 <button onClick={() => history.push('/search')}>Add a book</button>
