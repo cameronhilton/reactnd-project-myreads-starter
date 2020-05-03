@@ -52,7 +52,10 @@ class BooksApp extends Component {
     return (
       <div className="app">
         <Route path='/search' render={({ history }) => (
-            <SearchBooks onClose={() => history.push('/')}/>
+            <SearchBooks
+              onClose={() => history.push('/')}
+              updateShelf={this.updateShelf}
+            />
           )}
         />
         <Route exact path='/' render={({ history }) => (
