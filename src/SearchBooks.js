@@ -5,17 +5,29 @@ import BooksGrid from './BooksGrid'
 class SearchBooks extends Component {
   state = {
     query: '',
-    books: []
+    searchedBooks: [],
+    shelfMap: {}
   }
 
   updateQuery = (query) => {
-    this.setState((currentState) => ({
+    this.setState(() => ({
       query: query
     }))
 
-    search(query).then((books) => {
-      this.setState((currentState) => ({
-        books: books
+    search(query).then((searchedBooks) => {
+      let shelfMap = {}
+      this.props.books.forEach((book) => {
+        shelfMap[book.id] = book.shelf
+      })
+
+      searchedBooks && !searchedBooks.error && searchedBooks
+        .map((book) => {
+          book.shelf = shelfMap[book.id] || 'none'
+          return book
+        })
+      this.setState(() => ({
+        searchedBooks: searchedBooks,
+        shelfMap: shelfMap
       }))
     })
   }
@@ -42,8 +54,8 @@ class SearchBooks extends Component {
           </div>
         </div>
         <div className="search-books-results">
-          {this.state.books && this.state.books.length > 0 &&
-            <BooksGrid books={this.state.books} updateShelf={this.props.updateShelf}/>}
+          {this.state.searchedBooks && this.state.searchedBooks.length > 0 &&
+            <BooksGrid books={this.state.searchedBooks} updateShelf={this.props.updateShelf}/>}
         </div>
       </div>
     )
