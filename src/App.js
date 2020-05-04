@@ -7,32 +7,14 @@ import './App.css'
  
 class BooksApp extends Component {
   state = {
-    currentlyReading: [],
-    wantToRead: [],
-    read: []
+    books: []
   }
 
   getBooks = () => {
     BooksAPI.getAll()
     .then((books) => {
-      let currentlyReading = []
-      let wantToRead = []
-      let read = []
-
-      books.forEach((book) => {
-        if (book.shelf === 'currentlyReading') {
-          currentlyReading.push(book)
-        } else if (book.shelf === 'wantToRead') {
-          wantToRead.push(book)
-        } else if (book.shelf === 'read') {
-          read.push(book)
-        }
-      })
-
       this.setState(() => ({
-        currentlyReading: currentlyReading,
-        wantToRead: wantToRead,
-        read: read
+        books: books
       }))
     })
   }
@@ -53,6 +35,7 @@ class BooksApp extends Component {
       <div className="app">
         <Route path='/search' render={({ history }) => (
             <SearchBooks
+              books={this.state.books}
               onClose={() => history.push('/')}
               updateShelf={this.updateShelf}
             />
@@ -64,9 +47,21 @@ class BooksApp extends Component {
                 <h1>MyReads</h1>
               </div>
               <div className="list-books-content">
-                <BookShelf title='Currently Reading' books={this.state.currentlyReading} updateShelf={this.updateShelf}/>
-                <BookShelf title='Want to Read' books={this.state.wantToRead} updateShelf={this.updateShelf}/>
-                <BookShelf title='Read' books={this.state.read} updateShelf={this.updateShelf}/>
+                <BookShelf
+                  title='Currently Reading'
+                  books={this.state.books}
+                  shelf='currentlyReading'
+                  updateShelf={this.updateShelf}/>
+                <BookShelf
+                  title='Want to Read'
+                  books={this.state.books}
+                  shelf='wantToRead'
+                  updateShelf={this.updateShelf}/>
+                <BookShelf
+                  title='Read'
+                  books={this.state.books}
+                  shelf='read'
+                  updateShelf={this.updateShelf}/>
               </div>
               <div className="open-search">
                 <button onClick={() => history.push('/search')}>Add a book</button>
